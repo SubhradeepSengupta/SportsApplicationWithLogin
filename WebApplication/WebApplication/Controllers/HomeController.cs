@@ -21,9 +21,16 @@ namespace WebApplication.Controllers
             this.signInManager = signInManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            if (User.Identity.IsAuthenticated)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Login", "Home");
+            }
         }
 
         [HttpGet]
@@ -41,7 +48,7 @@ namespace WebApplication.Controllers
 
                 if(user != null)
                 {
-                    var result = await signInManager.PasswordSignInAsync(model.UserName, model.Password, true, false);
+                    var result = await signInManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
 
                     if(result.Succeeded)
                     {
@@ -77,7 +84,7 @@ namespace WebApplication.Controllers
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Login");
+                    return RedirectToAction("Index","Home");
                 }
                 else
                 {
@@ -88,6 +95,13 @@ namespace WebApplication.Controllers
                 }
             }
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult About()

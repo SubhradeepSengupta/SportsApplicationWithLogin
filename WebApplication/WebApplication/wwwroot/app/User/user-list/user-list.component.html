@@ -1,0 +1,22 @@
+<div class="jumbotron" style="text-align: center;">
+    <h3>User List</h3>
+
+    <table class="table table-striped" style="margin-top: 5%;">
+        <thead>
+            <tr style="font-weight: bold; text-transform: uppercase">
+                <td>User Name</td>
+                <td>User Role</td>
+                <td></td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let user of UserList">
+                <td> {{ user.Name }} </td>
+                <td> {{ user.Role }} </td>
+                <td> <a class="btn btn-primary" [routerLink]="['/user-edit/', user.ID]">Edit</a> </td>
+                <td> <button class="btn btn-danger" (click)="DeleteUser(user.ID)">Delete</button> </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

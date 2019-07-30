@@ -1,0 +1,42 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "newProjectRoot": "projects",
+  "projects": {
+    "sports-app": {
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "configurations": {
+            "production": {
+              "aot": true,
+              "extractCss": true,
+              "fileReplacements": [
+                {
+                  "replace": "./wwwroot/environments/environment.ts",
+                  "with": "./wwwroot/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true
+            }
+          },
+          "options": {
+            "assets": [],
+            "index": "./wwwroot/index.html",
+            "main": "./wwwroot/app/main.ts",
+            "outputPath": "./wwwroot/dist/web/",
+            "polyfills": "./wwwroot/polyfills.ts",
+            "scripts": [],
+            "styles": [],
+            "tsConfig": "./wwwroot/tsconfig.json"
+          }
+        }
+      },
+      "prefix": "app",
+      "projectType": "application",
+      "root": "wwwroot",
+      "schematics": {},
+      "sourceRoot": ""
+    }
+  },
+  "version": 1
+}
