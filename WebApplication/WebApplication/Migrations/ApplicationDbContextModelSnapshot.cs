@@ -180,6 +180,77 @@ namespace WebApplication.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("WebApplication.Models.Test", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Date");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Tests");
+                });
+
+            modelBuilder.Entity("WebApplication.Models.TestType", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.HasKey("ID");
+
+                    b.ToTable("TestTypes");
+                });
+
+            modelBuilder.Entity("WebApplication.Models.TestTypeMapper", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("TestID");
+
+                    b.Property<int>("TestTypeID");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("TestID");
+
+                    b.HasIndex("TestTypeID");
+
+                    b.ToTable("TestTypeMappers");
+                });
+
+            modelBuilder.Entity("WebApplication.Models.UserTestMapper", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double?>("CooperTestDistance");
+
+                    b.Property<string>("FitnessRating");
+
+                    b.Property<int?>("SprintTestTime");
+
+                    b.Property<int>("TestID");
+
+                    b.Property<string>("UserID");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("TestID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("UserTestMappers");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
@@ -223,6 +294,31 @@ namespace WebApplication.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("WebApplication.Models.TestTypeMapper", b =>
+                {
+                    b.HasOne("WebApplication.Models.Test", "Test")
+                        .WithMany()
+                        .HasForeignKey("TestID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("WebApplication.Models.TestType", "TestType")
+                        .WithMany()
+                        .HasForeignKey("TestTypeID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("WebApplication.Models.UserTestMapper", b =>
+                {
+                    b.HasOne("WebApplication.Models.Test")
+                        .WithMany("UserTestMappers")
+                        .HasForeignKey("TestID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Users")
+                        .WithMany()
+                        .HasForeignKey("UserID");
                 });
 #pragma warning restore 612, 618
         }

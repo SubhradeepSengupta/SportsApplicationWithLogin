@@ -1,0 +1,49 @@
+<div class="jumbotron" style="margin-top: 3%; text-align: center;">
+    <h3>Add Athlete To Test</h3>
+
+    <div class="container" *ngFor="let test of TestDetails" style="margin-top: 5%;">
+        <div *ngIf="test.TestType.Name === 'Cooper Test'; then coopertest else sprinttest"></div>
+
+        <ng-template #coopertest>
+            <form #form="ngForm" autocomplete="off">
+                <div class="form-group">
+                    <label>Athlete Name</label>
+                    <select id="name" name="name" #name="ngModel" [(ngModel)]="FormData.name" class="form-control" required>
+                        <option disabled selected> --Select-- </option>
+                        <option  *ngFor="let athlete of AthleteDetails"> {{ athlete.Name }} </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Distance</label>
+                    <input type="text" id="distance" name="distance" #distance="ngModel" [(ngModel)]="FormData.distance" class="form-control" required />
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success" (click)="athleteSubmit(TestId)" [disabled]="form.invalid">Save</button>
+                </div>
+            </form>
+        </ng-template>
+
+        <ng-template #sprinttest>
+            <form #form="ngForm" autocomplete="off">
+                <div class="form-group">
+                    <label>Athlete Name</label>
+                    <select id="name" name="name" #name="ngModel" [(ngModel)]="FormData.name" class="form-control" required>
+                        <option disabled selected> --Select-- </option>
+                        <option *ngFor="let athlete of AthleteDetails"> {{ athlete.Name }} </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Time</label>
+                    <input type="text" id="time" name="time" #time="ngModel" [(ngModel)]="FormData.time" class="form-control" required />
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success" (click)="athleteSubmit(TestId)" [disabled]="form.invalid">Save</button>
+                </div>
+            </form>
+        </ng-template>
+    </div>
+</div>

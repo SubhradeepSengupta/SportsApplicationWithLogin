@@ -1,0 +1,20 @@
+<div class="jumbotron" style="margin-top: 3%; text-align: center;">
+    <a class="btn btn-primary btn-lg" [routerLink]="['/create-test']" style="margin-bottom: 5%;">Create new Test</a>
+
+    <table class="table table-hover">
+        <thead>
+            <tr style="font-weight: bold;">
+                <td>Date</td>
+                <td>Number Of Participants</td>
+                <td>Test Type</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let test of TestList">
+                <td><a [routerLink]="['/test-details/', test.Test.ID]" style="text-decoration: none; display: block; color: black;"> {{ test.Test.Date | date: 'dd/MM/yyyy' }} </a></td>
+                <td><a [routerLink]="['/test-details/', test.Test.ID]" style="text-decoration: none; display: block; color: black;"> {{ test.Test.UserTestMappers.length }} </a></td>
+                <td><a [routerLink]="['/test-details/', test.Test.ID]" style="text-decoration: none; display: block; color: black;"> {{ test.TestType.Name }} </a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

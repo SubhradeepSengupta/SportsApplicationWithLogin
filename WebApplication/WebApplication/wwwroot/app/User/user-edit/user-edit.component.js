@@ -28,7 +28,13 @@ let UserEditComponent = class UserEditComponent {
         });
     }
     UserEdit() {
-        this._service.UpdateUser(this.UserDetails).subscribe();
+        this._service.UpdateUser(this.UserDetails).subscribe(res => {
+            debugger;
+            this._router.navigate(['']);
+        }, err => {
+            debugger;
+            console.log("Error: " + err);
+        });
     }
 };
 UserEditComponent = __decorate([

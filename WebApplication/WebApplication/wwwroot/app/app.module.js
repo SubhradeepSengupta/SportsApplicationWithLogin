@@ -16,6 +16,12 @@ const router_1 = require("@angular/router");
 const user_module_1 = require("./User/user.module");
 const user_list_component_1 = require("./User/user-list/user-list.component");
 const user_edit_component_1 = require("./User/user-edit/user-edit.component");
+const test_list_component_1 = require("./Test/test-list/test-list.component");
+const create_test_component_1 = require("./Test/create-test/create-test.component");
+const test_details_component_1 = require("./Test/test-details/test-details.component");
+const add_athlete_component_1 = require("./Test/add-athlete/add-athlete.component");
+const edit_athlete_component_1 = require("./Test/edit-athlete/edit-athlete.component");
+const test_module_1 = require("./Test/test.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -29,6 +35,7 @@ AppModule = __decorate([
             http_1.HttpClientModule,
             animations_1.BrowserAnimationsModule,
             user_module_1.UserModule,
+            test_module_1.TestModule,
             router_1.RouterModule.forRoot([
                 {
                     path: '',
@@ -42,6 +49,26 @@ AppModule = __decorate([
                 {
                     path: 'user-edit/:id',
                     component: user_edit_component_1.UserEditComponent
+                },
+                {
+                    path: 'test-list',
+                    component: test_list_component_1.TestListComponent
+                },
+                {
+                    path: 'create-test',
+                    component: create_test_component_1.CreateTestComponent
+                },
+                {
+                    path: 'test-details/:id',
+                    component: test_details_component_1.TestDetailsComponent
+                },
+                {
+                    path: 'test-details/:id/add-athlete',
+                    component: add_athlete_component_1.AddAthleteComponent
+                },
+                {
+                    path: 'edit-athlete/:testId/:userId',
+                    component: edit_athlete_component_1.EditAthleteComponent
                 }
             ])
         ],

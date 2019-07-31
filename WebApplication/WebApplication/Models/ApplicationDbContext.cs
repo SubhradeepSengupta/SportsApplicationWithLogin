@@ -13,5 +13,9 @@ namespace WebApplication.Models
         {
 
         }
+        public DbSet<Test> Tests { get; set; }
+        public DbSet<TestType> TestTypes { get; set; }
+        public DbSet<TestTypeMapper> TestTypeMappers { get; set; }
+        public DbSet<UserTestMapper> UserTestMappers { get; set; }
     }
 }

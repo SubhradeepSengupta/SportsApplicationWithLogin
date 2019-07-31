@@ -21,7 +21,7 @@ namespace WebApplication.Controllers
             this.signInManager = signInManager;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -97,7 +97,7 @@ namespace WebApplication.Controllers
             return View(model);
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();

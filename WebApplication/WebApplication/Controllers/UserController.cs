@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,11 +18,13 @@ namespace WebApplication.Controllers
     {
         private readonly ApplicationDbContext context;
         private readonly UserManager<IdentityUser> userManager;
+        private readonly SignInManager<IdentityUser> signInManager;
 
-        public UserController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public UserController(ApplicationDbContext context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
             this.context = context;
             this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
         [HttpGet]
@@ -64,7 +65,8 @@ namespace WebApplication.Controllers
                 var user = await userManager.FindByIdAsync(id);
                 var role = await userManager.GetRolesAsync(user);
 
-                return Ok(new {
+                return Ok(new
+                {
                     ID = user.Id,
                     Name = user.UserName,
                     Role = role
@@ -84,14 +86,15 @@ namespace WebApplication.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var user = await userManager.FindByIdAsync(id);
-                if (user == null)
+                var UserRole = (await userManager.GetRolesAsync(user)).FirstOrDefault();
+                if (user == null && UserRole == null)
                 {
                     return NotFound();
                 }
                 else
                 {
+                    await userManager.RemoveFromRoleAsync(user, UserRole.ToString());
                     user.UserName = model.Name;
-                    await userManager.RemoveFromRoleAsync(user, userManager.GetRolesAsync(user).ToString());
                     await userManager.AddToRoleAsync(user, model.Role);
 
                     return Ok(model);
@@ -108,22 +111,28 @@ namespace WebApplication.Controllers
         [Authorize(Roles = "Coach,Athlete")]
         public async Task<IActionResult> DeleteUserAsync([FromRoute] string id)
         {
-            if (User.Identity.IsAuthenticated)
+            var user = await context.Users.FindAsync(id);
+            var userTestMapper = await context.UserTestMappers.Where(t => t.Users.UserName == user.UserName).FirstOrDefaultAsync();
+            if (user == null)
             {
-                var user = await userManager.FindByIdAsync(id);
-                if (user == null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    await userManager.DeleteAsync(user);
-                    return Ok(user);
-                }
+                return NotFound();
             }
             else
             {
-                return RedirectToAction("Index", "Home");
+                if (userTestMapper != null)
+                {
+                    context.UserTestMappers.Remove(userTestMapper);
+                    context.Users.Remove(user);
+                    await context.SaveChangesAsync();
+                    return Ok(user);
+                }
+                else
+                {
+                    context.Users.Remove(user);
+                    await context.SaveChangesAsync();
+                    await signInManager.SignOutAsync();
+                    return Ok(user);
+                } 
             }
         }
     }
