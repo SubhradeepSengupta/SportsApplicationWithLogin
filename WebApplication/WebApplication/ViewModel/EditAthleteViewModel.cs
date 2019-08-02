@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebApplication.Models;
 
 namespace WebApplication.ViewModel
 {
@@ -12,6 +13,6 @@ namespace WebApplication.ViewModel
         public int? SprintTestTime { get; set; }
         public double? CooperTestDistance { get; set; }
         public string FitnessRating { get; set; }
-        public IdentityUser Users { get; set; }
+        public ApplicationUser Users { get; set; }
     }
 }

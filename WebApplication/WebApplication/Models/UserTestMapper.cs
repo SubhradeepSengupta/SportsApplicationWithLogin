@@ -19,7 +19,7 @@ namespace WebApplication.Models
         public string FitnessRating { get; set; }
 
         [ForeignKey("UserID")]
-        public virtual IdentityUser Users { get; set; }
+        public virtual ApplicationUser Users { get; set; }
 
         [ForeignKey("TestID")]
         [NotMapped]

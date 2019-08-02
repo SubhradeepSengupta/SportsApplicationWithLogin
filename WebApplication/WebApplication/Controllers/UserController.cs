@@ -17,10 +17,10 @@ namespace WebApplication.Controllers
     public class UserController : ControllerBase
     {
         private readonly ApplicationDbContext context;
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
 
-        public UserController(ApplicationDbContext context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public UserController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             this.context = context;
             this.userManager = userManager;
@@ -41,7 +41,7 @@ namespace WebApplication.Controllers
             }
             else
             {
-                var Users = await (from users in context.Users.Where(u => u.UserName.Equals(LoggedInUser.ToString()))
+                var Users = await (from users in userManager.Users.Where(u => u.UserName.Equals(LoggedInUser.ToString()))
                                    join roles in context.UserRoles
                                    on users.Id equals roles.UserId
                                    join userroles in context.Roles
@@ -49,7 +49,7 @@ namespace WebApplication.Controllers
                                    select new
                                    {
                                        ID = users.Id,
-                                       Name = users.UserName,
+                                       Name = users.FullName,
                                        Role = userroles.Name
                                    }).ToListAsync();
 
@@ -71,7 +71,7 @@ namespace WebApplication.Controllers
                 var UserId = await context.Users.Where(u => u.UserName.Equals(LoggedInUser.ToString())).Select(u => u.Id).FirstOrDefaultAsync();
                 var Role = (await userManager.GetRolesAsync(LoggedInUser)).FirstOrDefault();
 
-                var Users = await (from users in context.Users
+                var Users = await (from users in userManager.Users
                                    join roles in context.UserRoles
                                    on users.Id equals roles.UserId
                                    join userroles in context.Roles
@@ -79,7 +79,7 @@ namespace WebApplication.Controllers
                                    select new
                                    {
                                        ID = users.Id,
-                                       Name = users.UserName,
+                                       Name = users.FullName,
                                        Role = userroles.Name
                                    }).ToListAsync();
 

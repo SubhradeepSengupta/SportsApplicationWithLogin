@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplication.Models;
@@ -15,10 +16,12 @@ namespace WebApplication.Controllers
     public class TestController : ControllerBase
     {
         private readonly ApplicationDbContext context;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public TestController(ApplicationDbContext context)
+        public TestController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             this.context = context;
+            this.userManager = userManager;
         }
 
         [HttpGet]

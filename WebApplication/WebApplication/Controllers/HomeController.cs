@@ -13,10 +13,10 @@ namespace WebApplication.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
 
-        public HomeController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public HomeController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -79,7 +79,7 @@ namespace WebApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                var identityUser = new IdentityUser { UserName = model.UserName };
+                var identityUser = new ApplicationUser { FullName = model.FullName, UserName = model.UserName };
                 var result = await userManager.CreateAsync(identityUser, model.Password);
                 await userManager.AddToRoleAsync(identityUser, model.Role);
 
