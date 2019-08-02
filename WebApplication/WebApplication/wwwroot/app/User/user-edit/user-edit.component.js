@@ -21,18 +21,17 @@ let UserEditComponent = class UserEditComponent {
     }
     ngOnInit() {
         this._service.GetUsersById(this._route.snapshot.paramMap.get('id')).subscribe(res => {
-            this.UserDetails = res;
             this.IsAvailable = true;
+            this.UserDetails = res;
+            console.log(res);
         }, err => {
             console.log(err);
         });
     }
     UserEdit() {
         this._service.UpdateUser(this.UserDetails).subscribe(res => {
-            debugger;
-            this._router.navigate(['']);
+            this._router.navigate(['/user-list']);
         }, err => {
-            debugger;
             console.log("Error: " + err);
         });
     }

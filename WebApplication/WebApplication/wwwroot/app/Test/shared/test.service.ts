@@ -37,4 +37,12 @@ export class TestService {
     addAthlete(id : number, data: any) {
         return this._http.post(this.URL + "/AddAthlete/" + id, data);
     }
+
+    getAthleteByTestId(testId: number, athleteId: string) {
+        return this._http.get(this.URL + "/GetAthleteByTest/" + testId + "/" + athleteId);
+    }
+
+    editAthlete(testId: number, athleteId: string, data: any) {
+        return this._http.put(this.URL + "/EditAthlete/" + testId + "/" + athleteId, data);
+    }
 }

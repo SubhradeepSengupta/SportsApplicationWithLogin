@@ -1,23 +1,51 @@
-<div class="jumbotron" style="text-align: center;">
-    <h3>User List</h3>
+<div class="jumbotron" style="text-align: center;" *ngIf="isValid">
+    <div *ngIf="!UserList.isCoach">
+        <div class="container" *ngFor="let user of UserList.Users">
+            <h3 style="font-weight: bold;">Welcome {{ user.Name }}</h3>
 
-    <table class="table table-striped" style="margin-top: 5%;">
-        <thead>
-            <tr style="font-weight: bold; text-transform: uppercase">
-                <td>User Name</td>
-                <td>User Role</td>
-                <td></td>
-                <td></td>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let user of UserList">
-                <td> {{ user.Name }} </td>
-                <td> {{ user.Role }} </td>
-                <td> <a class="btn btn-primary" [routerLink]="['/user-edit/', user.ID]">Edit</a> </td>
-                <td> <button class="btn btn-danger" (click)="DeleteUser(user.ID)">Delete</button> </td>
-            </tr>
-        </tbody>
-    </table>
-    <a class="btn btn-primary" [routerLink]="['/test-list']">View All Tests</a>
+            <h3>Test Details</h3>
+
+            <div>
+                <table class="table table-striped" style="margin-top:5%;">
+                    <thead>
+                        <tr style="font-weight: bold;">
+                            <td>Test Id</td>
+                            <td>Sprint Test Time</td>
+                            <td>Cooper Test Distance</td>
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let test of UserList.UserTest">
+                        <tr>
+                            <td> {{ test.TestID }} </td>
+                            <td> {{ test.SprintTestTime }} </td>
+                            <td> {{ test.CooperTestDistance }} </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="UserList.isCoach">
+        <h3>User List</h3>
+        <table class="table table-striped" style="margin-top: 5%;">
+            <thead>
+                <tr style="font-weight: bold; text-transform: uppercase">
+                    <td>User Name</td>
+                    <td>User Role</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of UserList.Users">
+                    <td> {{ user.Name }} </td>
+                    <td> {{ user.Role }} </td>
+                    <td> <a class="btn btn-primary" [routerLink]="['/user-edit/', user.ID]">Edit</a> </td>
+                    <td> <button class="btn btn-danger" (click)="DeleteUser(user.ID)">Delete</button> </td>
+                </tr>
+            </tbody>
+        </table>
+        <a class="btn btn-primary btn-lg" [routerLink]="['/test-list']">View All Tests</a>
+    </div>
 </div>

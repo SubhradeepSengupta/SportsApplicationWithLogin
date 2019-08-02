@@ -16,18 +16,27 @@ let UserListComponent = class UserListComponent {
     constructor(_service, _router) {
         this._service = _service;
         this._router = _router;
+        this.isValid = false;
     }
     ngOnInit() {
-        this._service.GetAllUsers().subscribe(res => {
+        this._service.GetUsers().subscribe(res => {
             this.UserList = res;
+            console.log(this.UserList);
+            this.isValid = true;
         }, err => {
             console.log(err);
         });
     }
     DeleteUser(id) {
         if (confirm("Are you sure?")) {
-            this._service.DeleteUser(id).subscribe(res => {
-                this._router.navigate(['/user-list']);
+            this._service.DeleteUser(id).subscribe((res) => {
+                debugger;
+                if (res.isCoach) {
+                    location.href = "/Home/Login";
+                }
+                else {
+                    this._router.navigate(['/user-list']);
+                }
             }, err => {
                 console.log(err);
             });

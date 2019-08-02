@@ -37,6 +37,12 @@ let TestService = class TestService {
     addAthlete(id, data) {
         return this._http.post(this.URL + "/AddAthlete/" + id, data);
     }
+    getAthleteByTestId(testId, athleteId) {
+        return this._http.get(this.URL + "/GetAthleteByTest/" + testId + "/" + athleteId);
+    }
+    editAthlete(testId, athleteId, data) {
+        return this._http.put(this.URL + "/EditAthlete/" + testId + "/" + athleteId, data);
+    }
 };
 TestService = __decorate([
     core_1.Injectable({

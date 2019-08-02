@@ -28,12 +28,49 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
+        [Route("GetUser")]
+        public async Task<IActionResult> GetUserAsync()
+        {
+            var LoggedInUser = await userManager.FindByNameAsync(User.Identity.Name);
+            var UserId = await context.Users.Where(u => u.UserName.Equals(LoggedInUser.ToString())).Select(u => u.Id).FirstOrDefaultAsync();
+            var Role = (await userManager.GetRolesAsync(LoggedInUser)).FirstOrDefault();
+
+            if(Role.Equals("Coach"))
+            {
+                return RedirectToAction("GetAllUsersAsync", "User");
+            }
+            else
+            {
+                var Users = await (from users in context.Users.Where(u => u.UserName.Equals(LoggedInUser.ToString()))
+                                   join roles in context.UserRoles
+                                   on users.Id equals roles.UserId
+                                   join userroles in context.Roles
+                                   on roles.RoleId equals userroles.Id
+                                   select new
+                                   {
+                                       ID = users.Id,
+                                       Name = users.UserName,
+                                       Role = userroles.Name
+                                   }).ToListAsync();
+
+                var UserTest = await context.UserTestMappers.Include(u => u.Users).Where(u => u.UserID == UserId).ToListAsync();
+                var isCoach = false;
+
+                return Ok( new { Users, UserTest, isCoach } );
+            }
+        }
+
+        [HttpGet]
         [Route("GetAllUsers")]
         [Authorize(Roles = "Coach")]
         public async Task<IActionResult> GetAllUsersAsync()
         {
             if (User.Identity.IsAuthenticated)
             {
+                var LoggedInUser = await userManager.FindByNameAsync(User.Identity.Name);
+                var UserId = await context.Users.Where(u => u.UserName.Equals(LoggedInUser.ToString())).Select(u => u.Id).FirstOrDefaultAsync();
+                var Role = (await userManager.GetRolesAsync(LoggedInUser)).FirstOrDefault();
+
                 var Users = await (from users in context.Users
                                    join roles in context.UserRoles
                                    on users.Id equals roles.UserId
@@ -46,7 +83,10 @@ namespace WebApplication.Controllers
                                        Role = userroles.Name
                                    }).ToListAsync();
 
-                return Ok(Users);
+                var UserTest = await context.UserTestMappers.Include(u => u.Users).Where(u => u.UserID == UserId).ToListAsync();
+                var isCoach = true;
+
+                return Ok(new { Users, UserTest, isCoach } );
             }
             else
             {
@@ -63,7 +103,7 @@ namespace WebApplication.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var user = await userManager.FindByIdAsync(id);
-                var role = await userManager.GetRolesAsync(user);
+                var role = (await userManager.GetRolesAsync(user)).FirstOrDefault();
 
                 return Ok(new
                 {
@@ -113,6 +153,7 @@ namespace WebApplication.Controllers
         {
             var user = await context.Users.FindAsync(id);
             var userTestMapper = await context.UserTestMappers.Where(t => t.Users.UserName == user.UserName).FirstOrDefaultAsync();
+            var isCoach = false;
             if (user == null)
             {
                 return NotFound();
@@ -124,15 +165,23 @@ namespace WebApplication.Controllers
                     context.UserTestMappers.Remove(userTestMapper);
                     context.Users.Remove(user);
                     await context.SaveChangesAsync();
-                    return Ok(user);
                 }
                 else
                 {
-                    context.Users.Remove(user);
-                    await context.SaveChangesAsync();
-                    await signInManager.SignOutAsync();
-                    return Ok(user);
-                } 
+                    if(user.UserName == User.Identity.Name)
+                    {
+                        context.Users.Remove(user);
+                        await context.SaveChangesAsync();
+                        await signInManager.SignOutAsync();
+                        isCoach = true;
+                    }
+                    else
+                    {
+                        context.Users.Remove(user);
+                        await context.SaveChangesAsync();
+                    }
+                }
+                return Ok(new { user, isCoach });
             }
         }
     }

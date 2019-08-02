@@ -10,13 +10,19 @@ import { Router } from '@angular/router';
 export class UserListComponent implements OnInit {
 
     UserList: any[];
+    isValid: boolean;
+    isCoach: boolean;
 
-    constructor(private _service: UserService, private _router: Router) { }
+    constructor(private _service: UserService, private _router: Router) {
+        this.isValid = false;
+    }
 
     ngOnInit() {
-        this._service.GetAllUsers().subscribe(
+        this._service.GetUsers().subscribe(
             res => {
                 this.UserList = res as any[];
+                console.log(this.UserList);
+                this.isValid = true;
             },
             err => {
                 console.log(err);
@@ -26,12 +32,25 @@ export class UserListComponent implements OnInit {
     DeleteUser(id: number) {
         if (confirm("Are you sure?")) {
             this._service.DeleteUser(id).subscribe(
-                res => {
-                    this._router.navigate(['/user-list']);
+                (res: any) => {
+                    debugger
+                    if (res.isCoach) {
+                        location.href = "/Home/Login";
+                    }
+                    else
+                    {
+                        this._router.navigate(['/user-list']);
+                    }
                 },
                 err => {
                     console.log(err);
-                })
+                });
         }
     }
+
+    //DeleteUser(id: number) {
+    //    if (confirm("Are you sure?")) {
+    //        this._service.DeleteUser(id);
+    //    }
+    //}
 }

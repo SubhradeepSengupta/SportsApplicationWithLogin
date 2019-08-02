@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplication.Models;
@@ -168,6 +166,36 @@ namespace WebApplication.Controllers
                 context.UserTestMappers.Update(UpdateUser);
             }
             await context.SaveChangesAsync();
+            return Ok(model);
+        }
+
+        [HttpGet]
+        [Route("GetAthleteByTest/{testId}/{athleteId}")]
+        public async Task<IActionResult> GetAthleteByTestAsync([FromRoute] int testId, [FromRoute] string athleteId)
+        {
+            var UserPerTest = await context.UserTestMappers.Include(u => u.Users).Where(t => t.TestID == testId).Where(t => t.UserID == athleteId).FirstOrDefaultAsync();
+            return Ok(UserPerTest);
+        }
+
+
+        [HttpPut]
+        [Route("EditAthlete/{testId}/{athleteId}")]
+        public async Task<IActionResult> EditAthleteAsync([FromRoute] int testId, [FromRoute] string athleteId, [FromBody] EditAthleteViewModel model)
+        {
+            var UserPerTest = context.UserTestMappers.Include(u => u.Users).Where(u => u.TestID == testId).Where(u => u.UserID == athleteId).FirstOrDefault();
+            UserPerTest.Users.UserName = model.Users.UserName;
+            if (model.CooperTestDistance != null)
+            {
+                UserPerTest.CooperTestDistance = model.CooperTestDistance;
+                UserPerTest.FitnessRating = CalculateFitness(model.CooperTestDistance);
+            }
+            else
+            {
+                UserPerTest.SprintTestTime = model.SprintTestTime;
+            }
+            context.UserTestMappers.Update(UserPerTest);
+            await context.SaveChangesAsync();
+
             return Ok(model);
         }
 

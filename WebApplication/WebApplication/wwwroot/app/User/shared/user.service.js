@@ -19,6 +19,9 @@ let UserService = class UserService {
     GetAllUsers() {
         return this._http.get(this.URL + "/GetAllUsers");
     }
+    GetUsers() {
+        return this._http.get(this.URL + "/GetUser");
+    }
     GetUsersById(id) {
         return this._http.get(this.URL + "/GetUser/" + id);
     }

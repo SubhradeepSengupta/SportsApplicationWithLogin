@@ -180,7 +180,7 @@ exports.CreateTestComponent = CreateTestComponent;
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ""
+module.exports = "<div class=\"jumbotron\" style=\"margin-top: 3%;\">\r\n    <h3>Edit Athlete</h3>\r\n    <div class=\"container\" *ngIf=\"toDisplay\" style=\"margin-top: 5%;\">\r\n        <div *ngIf=\"Athlete.CooperTestDistance !== null\">\r\n            <form (submit)=\"onSubmit()\" autocomplete=\"off\">\r\n                <input type=\"text\" name=\"id\" [value]=\"Athlete.UserID\" hidden>\r\n                <input type=\"text\" name=\"id\" [value]=\"Athlete.TestID\" hidden>\r\n                <div class=\"form-group\">\r\n                    <label>Athlete Name</label>\r\n                    <input id=\"username\" name=\"username\" #username=\"ngModel\" class=\"form-control\" [(ngModel)]=\"Athlete.Users.UserName\" />\r\n                </div>\r\n                <div class=\"form-group\">\r\n                    <label>Distance</label>\r\n                    <input id=\"coopertestdistance\" name=\"coopertestdistance\" #coopertestdistance=\"ngModel\" class=\"form-control\" [(ngModel)]=\"Athlete.CooperTestDistance\" />\r\n                </div>\r\n                <div class=\"form-group\">\r\n                    <button type=\"submit\" class=\"btn btn-success\">Save</button>\r\n                </div>\r\n            </form>\r\n        </div>\r\n        <div *ngIf=\"Athlete.CooperTestDistance === null\">\r\n            <form (submit)=\"onSubmit()\" autocomplete=\"off\">\r\n                <input type=\"text\" name=\"id\" [value]=\"Athlete.UserID\" hidden>\r\n                <input type=\"text\" name=\"id\" [value]=\"Athlete.TestID\" hidden>\r\n                <div class=\"form-group\">\r\n                    <label>Athlete Name</label>\r\n                    <input id=\"username\" name=\"username\" #username=\"ngModel\" class=\"form-control\" [(ngModel)]=\"Athlete.Users.UserName\" />\r\n                </div>\r\n                <div class=\"form-group\">\r\n                    <label>Time</label>\r\n                    <input id=\"sprinttesttime\" name=\"sprinttesttime\" #sprinttesttime=\"ngModel\" class=\"form-control\" [(ngModel)]=\"Athlete.SprintTestTime\" />\r\n                </div>\r\n                <div class=\"form-group\">\r\n                    <button type=\"submit\" class=\"btn btn-success\">Save</button>\r\n                </div>\r\n            </form>\r\n        </div>\r\n    </div>\r\n</div>"
 
 /***/ }),
 
@@ -214,6 +214,23 @@ let EditAthleteComponent = class EditAthleteComponent {
         this.toDisplay = false;
     }
     ngOnInit() {
+        this.TestId = +this._route.snapshot.paramMap.get('testId');
+        this.AthleteId = this._route.snapshot.paramMap.get('userId');
+        this._testService.getAthleteByTestId(this.TestId, this.AthleteId).subscribe(res => {
+            this.Athlete = res;
+            this.toDisplay = true;
+            console.log(res);
+        }, err => {
+            console.log(err);
+        });
+    }
+    onSubmit() {
+        this._testService.editAthlete(this.TestId, this.AthleteId, this.Athlete).subscribe(res => {
+            console.log(res);
+            this._router.navigate(['/test-details/', this.TestId]);
+        }, err => {
+            console.log(err);
+        });
     }
 };
 EditAthleteComponent = __decorate([
@@ -274,6 +291,12 @@ let TestService = class TestService {
     }
     addAthlete(id, data) {
         return this._http.post(this.URL + "/AddAthlete/" + id, data);
+    }
+    getAthleteByTestId(testId, athleteId) {
+        return this._http.get(this.URL + "/GetAthleteByTest/" + testId + "/" + athleteId);
+    }
+    editAthlete(testId, athleteId, data) {
+        return this._http.put(this.URL + "/EditAthlete/" + testId + "/" + athleteId, data);
     }
 };
 TestService = __decorate([
@@ -497,6 +520,9 @@ let UserService = class UserService {
     GetAllUsers() {
         return this._http.get(this.URL + "/GetAllUsers");
     }
+    GetUsers() {
+        return this._http.get(this.URL + "/GetUser");
+    }
     GetUsersById(id) {
         return this._http.get(this.URL + "/GetUser/" + id);
     }
@@ -525,7 +551,7 @@ exports.UserService = UserService;
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"jumbotron\" style=\"text-align: center\">\r\n    <h3>Edit Athlete</h3>\r\n\r\n    <div class=\"container\" *ngIf=\"IsAvailable\">\r\n        <form #form=\"ngForm\" (submit)=\"UserEdit()\">\r\n            <input id=\"id\" name=\"id\" [(ngModel)]=\"UserDetails.ID\" hidden />\r\n            <div class=\"form-group\">\r\n                <label>User Name</label>\r\n                <input class=\"form-control\" id=\"username\" name=\"username\" [(ngModel)]=\"UserDetails.Name\" required/>\r\n            </div>\r\n            <div class=\"form-group\">\r\n                <label>User Role</label>\r\n                <select class=\"form-control\" id=\"role\" name=\"role\" [(ngModel)]=\"UserDetails.Role\">\r\n                    <option>Coach</option>\r\n                    <option>Athlete</option>\r\n                </select>\r\n            </div>\r\n            <button type=\"submit\" class=\"btn btn-success\">Save</button>\r\n        </form>\r\n    </div>\r\n</div>"
+module.exports = "<div class=\"jumbotron\" style=\"text-align: center\">\r\n    <h3>Edit Athlete</h3>\r\n\r\n    <div class=\"container\" *ngIf=\"IsAvailable\">\r\n        <form #form=\"ngForm\" (submit)=\"UserEdit()\">\r\n            <input id=\"id\" name=\"id\" [(ngModel)]=\"UserDetails.ID\" hidden />\r\n            <div class=\"form-group\">\r\n                <label>User Name</label>\r\n                <input class=\"form-control\" id=\"username\" name=\"username\" [(ngModel)]=\"UserDetails.Name\"/>\r\n            </div>\r\n            <div class=\"form-group\">\r\n                <label>User Role</label>\r\n                <select class=\"form-control\" id=\"role\" name=\"role\" [(ngModel)]=\"UserDetails.Role\">\r\n                    <option>Coach</option>\r\n                    <option>Athlete</option>\r\n                </select>\r\n            </div>\r\n            <button type=\"submit\" class=\"btn btn-success\">Save</button>\r\n        </form>\r\n    </div>\r\n</div>"
 
 /***/ }),
 
@@ -560,18 +586,17 @@ let UserEditComponent = class UserEditComponent {
     }
     ngOnInit() {
         this._service.GetUsersById(this._route.snapshot.paramMap.get('id')).subscribe(res => {
-            this.UserDetails = res;
             this.IsAvailable = true;
+            this.UserDetails = res;
+            console.log(res);
         }, err => {
             console.log(err);
         });
     }
     UserEdit() {
         this._service.UpdateUser(this.UserDetails).subscribe(res => {
-            debugger;
-            this._router.navigate(['']);
+            this._router.navigate(['/user-list']);
         }, err => {
-            debugger;
             console.log("Error: " + err);
         });
     }
@@ -595,7 +620,7 @@ exports.UserEditComponent = UserEditComponent;
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"jumbotron\" style=\"text-align: center;\">\r\n    <h3>User List</h3>\r\n\r\n    <table class=\"table table-striped\" style=\"margin-top: 5%;\">\r\n        <thead>\r\n            <tr style=\"font-weight: bold; text-transform: uppercase\">\r\n                <td>User Name</td>\r\n                <td>User Role</td>\r\n                <td></td>\r\n                <td></td>\r\n            </tr>\r\n        </thead>\r\n        <tbody>\r\n            <tr *ngFor=\"let user of UserList\">\r\n                <td> {{ user.Name }} </td>\r\n                <td> {{ user.Role }} </td>\r\n                <td> <a class=\"btn btn-primary\" [routerLink]=\"['/user-edit/', user.ID]\">Edit</a> </td>\r\n                <td> <button class=\"btn btn-danger\" (click)=\"DeleteUser(user.ID)\">Delete</button> </td>\r\n            </tr>\r\n        </tbody>\r\n    </table>\r\n    <a class=\"btn btn-primary\" [routerLink]=\"['/test-list']\">View All Tests</a>\r\n</div>"
+module.exports = "<div class=\"jumbotron\" style=\"text-align: center;\" *ngIf=\"isValid\">\r\n    <div *ngIf=\"!UserList.isCoach\">\r\n        <div class=\"container\" *ngFor=\"let user of UserList.Users\">\r\n            <h3 style=\"font-weight: bold;\">Welcome {{ user.Name }}</h3>\r\n\r\n            <h3>Test Details</h3>\r\n\r\n            <div>\r\n                <table class=\"table table-striped\" style=\"margin-top:5%;\">\r\n                    <thead>\r\n                        <tr style=\"font-weight: bold;\">\r\n                            <td>Test Id</td>\r\n                            <td>Sprint Test Time</td>\r\n                            <td>Cooper Test Distance</td>\r\n                        </tr>\r\n                    </thead>\r\n                    <tbody *ngFor=\"let test of UserList.UserTest\">\r\n                        <tr>\r\n                            <td> {{ test.TestID }} </td>\r\n                            <td> {{ test.SprintTestTime }} </td>\r\n                            <td> {{ test.CooperTestDistance }} </td>\r\n                        </tr>\r\n                    </tbody>\r\n                </table>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n    <div *ngIf=\"UserList.isCoach\">\r\n        <h3>User List</h3>\r\n        <table class=\"table table-striped\" style=\"margin-top: 5%;\">\r\n            <thead>\r\n                <tr style=\"font-weight: bold; text-transform: uppercase\">\r\n                    <td>User Name</td>\r\n                    <td>User Role</td>\r\n                    <td></td>\r\n                    <td></td>\r\n                </tr>\r\n            </thead>\r\n            <tbody>\r\n                <tr *ngFor=\"let user of UserList.Users\">\r\n                    <td> {{ user.Name }} </td>\r\n                    <td> {{ user.Role }} </td>\r\n                    <td> <a class=\"btn btn-primary\" [routerLink]=\"['/user-edit/', user.ID]\">Edit</a> </td>\r\n                    <td> <button class=\"btn btn-danger\" (click)=\"DeleteUser(user.ID)\">Delete</button> </td>\r\n                </tr>\r\n            </tbody>\r\n        </table>\r\n        <a class=\"btn btn-primary btn-lg\" [routerLink]=\"['/test-list']\">View All Tests</a>\r\n    </div>\r\n</div>"
 
 /***/ }),
 
@@ -625,18 +650,27 @@ let UserListComponent = class UserListComponent {
     constructor(_service, _router) {
         this._service = _service;
         this._router = _router;
+        this.isValid = false;
     }
     ngOnInit() {
-        this._service.GetAllUsers().subscribe(res => {
+        this._service.GetUsers().subscribe(res => {
             this.UserList = res;
+            console.log(this.UserList);
+            this.isValid = true;
         }, err => {
             console.log(err);
         });
     }
     DeleteUser(id) {
         if (confirm("Are you sure?")) {
-            this._service.DeleteUser(id).subscribe(res => {
-                this._router.navigate(['/user-list']);
+            this._service.DeleteUser(id).subscribe((res) => {
+                debugger;
+                if (res.isCoach) {
+                    location.href = "/Home/Login";
+                }
+                else {
+                    this._router.navigate(['/user-list']);
+                }
             }, err => {
                 console.log(err);
             });

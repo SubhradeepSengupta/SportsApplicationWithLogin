@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\app\User\shared\user.model.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="wwwroot\**">
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </Content>

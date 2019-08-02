@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../shared/user.service';
 import { NgForm } from '@angular/forms';
+import { User } from '../shared/user.model';
 
 @Component({
     selector: 'app-user-edit',
@@ -13,14 +14,15 @@ export class UserEditComponent implements OnInit {
 
     constructor(private _service: UserService, private _route: ActivatedRoute, private _router: Router) { }
 
-    UserDetails: any[];
+    UserDetails: User;
     IsAvailable: boolean;
 
     ngOnInit() {
         this._service.GetUsersById(this._route.snapshot.paramMap.get('id')).subscribe(
             res => {
-                this.UserDetails = res as any[];
                 this.IsAvailable = true;
+                this.UserDetails = res as User;
+                console.log(res);
             },
             err => {
                 console.log(err)
@@ -30,11 +32,9 @@ export class UserEditComponent implements OnInit {
     UserEdit() {
         this._service.UpdateUser(this.UserDetails).subscribe(
             res => {
-                debugger
-                this._router.navigate(['']);
+                this._router.navigate(['/user-list']);
             },
             err => {
-                debugger
                 console.log("Error: " +err);
             });
     }

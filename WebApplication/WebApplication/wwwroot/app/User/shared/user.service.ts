@@ -17,6 +17,10 @@ export class UserService {
         return this._http.get(this.URL + "/GetAllUsers");
     }
 
+    GetUsers() {
+        return this._http.get(this.URL + "/GetUser");
+    }
+
     GetUsersById(id: string)
     {
         return this._http.get(this.URL + "/GetUser/" + id);

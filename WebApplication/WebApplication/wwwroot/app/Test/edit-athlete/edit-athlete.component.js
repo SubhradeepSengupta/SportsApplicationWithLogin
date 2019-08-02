@@ -20,6 +20,23 @@ let EditAthleteComponent = class EditAthleteComponent {
         this.toDisplay = false;
     }
     ngOnInit() {
+        this.TestId = +this._route.snapshot.paramMap.get('testId');
+        this.AthleteId = this._route.snapshot.paramMap.get('userId');
+        this._testService.getAthleteByTestId(this.TestId, this.AthleteId).subscribe(res => {
+            this.Athlete = res;
+            this.toDisplay = true;
+            console.log(res);
+        }, err => {
+            console.log(err);
+        });
+    }
+    onSubmit() {
+        this._testService.editAthlete(this.TestId, this.AthleteId, this.Athlete).subscribe(res => {
+            console.log(res);
+            this._router.navigate(['/test-details/', this.TestId]);
+        }, err => {
+            console.log(err);
+        });
     }
 };
 EditAthleteComponent = __decorate([
