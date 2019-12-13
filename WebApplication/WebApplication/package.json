@@ -15,7 +15,7 @@
     "install": "^0.12.2",
     "luxon": "1.15.0",
     "ngx-bootstrap": "5.1.0",
-    "npm": "^6.9.0",
+    "npm": "^6.13.4",
     "rimraf": "^2.6.3",
     "rxjs": "6.5.2",
     "rxjs-compat": "^6.5.2",
