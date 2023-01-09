@@ -13,7 +13,7 @@
     "@angular/router": "7.2.15",
     "core-js": "2.6.8",
     "install": "^0.12.2",
-    "luxon": "1.15.0",
+    "luxon": "1.28.1",
     "ngx-bootstrap": "5.1.0",
     "npm": "^6.9.0",
     "rimraf": "^2.6.3",
